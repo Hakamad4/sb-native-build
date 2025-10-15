@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  sb-native-db:
+    image: mysql:8.0
+    container_name: my-mysql-8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: sb-native
+      MYSQL_USER: sb-native-db-user
+      MYSQL_PASSWORD: sb-native-db-pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  sb-native-app:
+    build: .
+    container_name: sb-native-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sb-native-db
+    environment:
+      JDBC_URL: jdbc:mysql://sb-native-db:3306/sb-native?useSSL=false&serverTimezone=UTC
+      DB_USERNAME: sb-native-db-user
+      DB_PASSWORD: sb-native-db-pass
+
+volumes:
+  mysql_data:
