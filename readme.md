@@ -4,8 +4,7 @@ Este projeto é um exemplo de aplicação Spring Boot com suporte a **Native Bui
 Nele foi adicionado uma conexão com um banco de dados para mostrar um exemplo de uso de uma API com banco de dados, onde geralmente é algo que pode dar uma atrasada no cold start.
 
 ## 🚀 Objetivo do Projeto
-
-Demonstrar a diferença de performance entre:
+O objetivo é demonstrar a diferença de performance entre Native Build e JVM, onde o build como nativo trouxe um cold start de **2.3s** para **0.1s**. Lembrando que esse tempo pode variar de acordo com o hardware e o ambiente.
 
 * Rodar a aplicação **normalmente (JVM)** via IntelliJ.
 * Rodar a aplicação **compilada nativamente** em um container Docker.
