@@ -1,8 +1,7 @@
-version: '3.8'
 services:
   sb-native-db:
     image: mysql:8.0
-    container_name: my-mysql-8
+    container_name: sb-native-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root123
@@ -13,18 +12,35 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - sb-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123" ]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
 
   sb-native-app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: sb-native-app
     ports:
       - "8080:8080"
     depends_on:
       - sb-native-db
     environment:
-      JDBC_URL: jdbc:mysql://sb-native-db:3306/sb-native?useSSL=false&serverTimezone=UTC
+      JDBC_URL: jdbc:mysql://sb-native-db:3306/sb-native?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       DB_USERNAME: sb-native-db-user
       DB_PASSWORD: sb-native-db-pass
+    networks:
+      - sb-network
+    restart: on-failure:3
 
 volumes:
   mysql_data:
+
+networks:
+  sb-network:
+    driver: bridge
